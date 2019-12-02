@@ -31,15 +31,21 @@ public class Servers {
             out = new DataOutputStream(socket.getOutputStream());
 
             // Receiving data from client
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            byte buffer[] = new byte[1000000];
+//            baos.write(buffer, 0 , in.read(buffer));
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte buffer[] = new byte[1024];
-            baos.write(buffer, 0 , in.read(buffer));
+            byte[] buffer = new byte[1024 /* or some other number */];
+            int numRead;
+
+            while((numRead = in.read(buffer,0,1024)) > 0) {
+                baos.write(buffer, 0, numRead);
+            }
 
             byte result[] = baos.toByteArray();
 
             try (FileOutputStream fos = new FileOutputStream("/Users/alexandre/Desktop/Arquivo/Dowload/arquivo")) {
                 fos.write(result);
-                //fos.close(); There is no more need for this line since you had created the instance of "fos" inside the try. And this will automatically close the OutputStream
             }
             System.out.println("Break");
 

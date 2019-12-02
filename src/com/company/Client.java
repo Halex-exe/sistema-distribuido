@@ -14,8 +14,12 @@ public class Client {
 
     public static void enviar(){
         try {
+            conectar();
             outS.write(bFile);
             outS.flush();
+            outS.close();
+            inS.close();
+            s.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,7 +48,6 @@ public class Client {
 
     public static void main(String[] args) {
 
-        conectar();
         Scanner ler = new Scanner(System.in);
         int menu = 10;
         String arquivoDir = null;
