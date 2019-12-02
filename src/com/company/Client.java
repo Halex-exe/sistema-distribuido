@@ -14,9 +14,10 @@ public class Client {
 
     public static void enviar(){
         try {
-            conectar();
+            conectar(1010);
             outS.write(bFile);
             outS.flush();
+
             outS.close();
             inS.close();
             s.close();
@@ -26,15 +27,37 @@ public class Client {
 
     }
 
-    public static void baixar(){
+    public static void baixar(){ //ler
+        try {
+            conectar(1111);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024 /* or some other number */];
+            int numRead;
+
+            while((numRead = inS.read(buffer,0,1024)) > 0) {
+                baos.write(buffer, 0, numRead);
+            }
+            byte result[] = baos.toByteArray();
+
+            try (FileOutputStream fos = new FileOutputStream("/Users/alexandre/Desktop/Arquivo/Dowload/arquivo")) {
+                fos.write(result);
+            }
+            System.out.println("Break");
+            //
+            outS.close();
+            inS.close(); //
+            s.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
 
-    public static void conectar() {
+    public static void conectar(int porta) {
         try {
-            s = new Socket("localhost", 1010);
 
+            s = new Socket("localhost", porta);
             outS = new DataOutputStream(s.getOutputStream());
             inS = new DataInputStream(s.getInputStream());
 
@@ -82,7 +105,8 @@ public class Client {
 
             }else{
                 if (menu == 2){
-
+                    System.out.println("Baixando arquivo!");
+                    baixar();
                 }else{
                     System.out.println("Opção inválida");
                 }

@@ -12,12 +12,11 @@ public class Servers {
     private ServerSocket server = null;
     private InputStream in = null;
     private OutputStream out = null;
+    static byte pt1[] = null;
 
-    public Servers(int port)
-    {
+    public Servers(int port) throws IOException {
         // starts server and waits for a connection
-        try
-        {
+
             server = new ServerSocket(port);
             System.out.println("Server started");
 
@@ -30,10 +29,6 @@ public class Servers {
             //writes on client socket
             out = new DataOutputStream(socket.getOutputStream());
 
-            // Receiving data from client
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            byte buffer[] = new byte[1000000];
-//            baos.write(buffer, 0 , in.read(buffer));
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024 /* or some other number */];
             int numRead;
@@ -44,7 +39,9 @@ public class Servers {
 
             byte result[] = baos.toByteArray();
 
-            byte[] parte1 = new byte[result.length / 4];
+            byte[] parte1 = new byte[result.length / 4]; //ficar aqui.
+            //pt1 = parte1;
+
             byte[] parte2 = new byte[result.length / 4]; //mandar para o 1020.
             byte[] parte3 = new byte[result.length / 4]; //mandar para o 1030.
             byte[] parte4 = new byte[result.length / 4]; //mandar para o 1040.
@@ -54,7 +51,16 @@ public class Servers {
             System.arraycopy(result, parte1.length + parte2.length, parte3, 0, parte3.length);
             System.arraycopy(result, parte1.length + parte1.length + parte3.length, parte4, 0, parte4.length);
 
+
+            enviar(1020, parte4);
+            enviar(1030, parte3);
+            enviar(1040, parte4);
+
+
+
             byte result2[] = new byte[parte1.length + parte2.length + parte3.length + parte4.length];
+
+            pt1 = result2;
 
             System.arraycopy(parte1, 0, result2, 0, parte1.length);
             System.arraycopy(parte2, 0, result2, parte1.length, parte2.length);
@@ -62,27 +68,38 @@ public class Servers {
             System.arraycopy(parte4, 0, result2, parte1.length + parte2.length + parte3.length, parte4.length);
 
 
+            esperar();
+    }
+    public void esperar() throws IOException {
 
-            try (FileOutputStream fos = new FileOutputStream("/Users/alexandre/Desktop/Arquivo/Dowload/arquivo")) {
-                fos.write(result2);
-            }
-            System.out.println("Break");
+        server = new ServerSocket(1111);
+        socket = server.accept();
 
-//            String res = Arrays.toString(result);
-//            System.out.println("Recieved from client : "+res);
-//
-//            //echoing back to client
-//            out.write(result);
-//
-//            System.out.println("Closing connection");
-//
-//            // close connection
-//            socket.close();
-//            in.close();
+        // takes input from the client socket
+        in = new DataInputStream(socket.getInputStream());
+        //writes on client socket
+        out = new DataOutputStream(socket.getOutputStream());
+
+        out.write(pt1);
+        out.flush();
+        in.close();
+        out.close();
+        socket.close();
+    }
+
+    public void enviar (int porta, byte[] arquivo){ //enviar o arquivo para os servidores.
+
+        Socket s = null;
+        try {
+            s = new Socket("localhost", porta);
+            OutputStream outS = new DataOutputStream(s.getOutputStream());
+            outS.write(arquivo);
+            outS.flush();
+            outS.close();
+            s.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        catch(IOException i)
-        {
-            System.out.println(i);
-        }
+
     }
 }
