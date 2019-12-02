@@ -11,7 +11,7 @@ public class Server extends Thread{
     private ServerSocket server = null;
     private InputStream in = null;
     private OutputStream out = null;
-    static byte result[] = null;
+    private byte result[] = null;
 
 
     public Server(int porta) throws IOException {
@@ -47,11 +47,19 @@ public class Server extends Thread{
         while((numRead = in.read(buffer,0,1024)) > 0) {
             baos.write(buffer, 0, numRead);
         }
-        result = baos.toByteArray();
+        this.setResult(baos.toByteArray());
 
         System.out.println(this.getName()+ " " + this.porta + " adicionou!");
 
         dowload();
+    }
+
+    public byte[] getResult() {
+        return result;
+    }
+
+    public void setResult(byte[] result) {
+        this.result = result;
     }
 
     public void dowload() throws IOException {
@@ -64,7 +72,7 @@ public class Server extends Thread{
         OutputStream outt = new DataOutputStream(sockett.getOutputStream());
 
 
-        outt.write(result);
+        outt.write(this.getResult());
         outt.flush();
 
         outt.close();

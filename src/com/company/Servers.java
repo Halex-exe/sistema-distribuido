@@ -50,21 +50,9 @@ public class Servers {
             System.arraycopy(result, parte1.length + parte1.length + parte3.length, parte4, 0, parte4.length);
 
 
-            enviar(1020, parte4);
+            enviar(1020, parte2);
             enviar(1030, parte3);
             enviar(1040, parte4);
-
-
-
-            //byte result2[] = new byte[parte1.length + parte2.length + parte3.length + parte4.length];
-
-            //pt1 = result2;
-
-//            System.arraycopy(parte1, 0, result2, 0, parte1.length);
-//            System.arraycopy(parte2, 0, result2, parte1.length, parte2.length);
-//            System.arraycopy(parte3, 0, result2, parte1.length + parte2.length, parte3.length);
-//            System.arraycopy(parte4, 0, result2, parte1.length + parte2.length + parte3.length, parte4.length);
-
 
             esperar();
     }
@@ -72,9 +60,6 @@ public class Servers {
 
         server = new ServerSocket(1011);
         socket = server.accept();
-
-        in = new DataInputStream(socket.getInputStream());
-        out = new DataOutputStream(socket.getOutputStream());
 
         //
         byte[] pt2 = baixar(1021);
@@ -87,6 +72,10 @@ public class Servers {
         System.arraycopy(pt2, 0, result2, pt1.length, pt2.length);
         System.arraycopy(pt3, 0, result2, pt1.length + pt2.length, pt3.length);
         System.arraycopy(pt4, 0, result2, pt1.length + pt2.length + pt3.length, pt4.length);
+
+        in = new DataInputStream(socket.getInputStream());
+        out = new DataOutputStream(socket.getOutputStream());
+
 
         out.write(result2);
         out.flush();
@@ -126,7 +115,6 @@ public class Servers {
             baos.write(buffer, 0, numRead);
         }
         byte result[] = baos.toByteArray();
-
         return result;
     }
 }
