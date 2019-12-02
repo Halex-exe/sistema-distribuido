@@ -44,8 +44,27 @@ public class Servers {
 
             byte result[] = baos.toByteArray();
 
+            byte[] parte1 = new byte[result.length / 4];
+            byte[] parte2 = new byte[result.length / 4]; //mandar para o 1020.
+            byte[] parte3 = new byte[result.length / 4]; //mandar para o 1030.
+            byte[] parte4 = new byte[result.length / 4]; //mandar para o 1040.
+
+            System.arraycopy(result, 0, parte1, 0, parte1.length);
+            System.arraycopy(result, parte1.length, parte2, 0, parte2.length);
+            System.arraycopy(result, parte1.length + parte2.length, parte3, 0, parte3.length);
+            System.arraycopy(result, parte1.length + parte1.length + parte3.length, parte4, 0, parte4.length);
+
+            byte result2[] = new byte[parte1.length + parte2.length + parte3.length + parte4.length];
+
+            System.arraycopy(parte1, 0, result2, 0, parte1.length);
+            System.arraycopy(parte2, 0, result2, parte1.length, parte2.length);
+            System.arraycopy(parte3, 0, result2, parte1.length + parte2.length, parte3.length);
+            System.arraycopy(parte4, 0, result2, parte1.length + parte2.length + parte3.length, parte4.length);
+
+
+
             try (FileOutputStream fos = new FileOutputStream("/Users/alexandre/Desktop/Arquivo/Dowload/arquivo")) {
-                fos.write(result);
+                fos.write(result2);
             }
             System.out.println("Break");
 
