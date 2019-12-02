@@ -35,9 +35,7 @@ public class Server extends Thread{
 
         System.out.println("Client accepted " + this.getName()+ " " + this.porta);
 
-        // takes input from the client socket
         in = new DataInputStream(socket.getInputStream());
-        //writes on client socket
         out = new DataOutputStream(socket.getOutputStream());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

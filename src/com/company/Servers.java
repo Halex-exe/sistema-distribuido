@@ -21,10 +21,8 @@ public class Servers {
             System.out.println("Principal esperando");
             socket = server.accept();
             System.out.println("Principal conectou");
-
-            // takes input from the client socket
+            
             in = new DataInputStream(socket.getInputStream());
-            //writes on client socket
             out = new DataOutputStream(socket.getOutputStream());
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
