@@ -12,7 +12,7 @@ public class Client {
     static byte[] bFile;
 
 
-    public static void enviar(){
+    public static void enviar() {
         try {
             conectar(1010);
             outS.write(bFile);
@@ -27,14 +27,14 @@ public class Client {
 
     }
 
-    public static void baixar(){ //ler
+    public static void baixar() { //ler
         try {
             conectar(1011);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024 /* or some other number */];
             int numRead;
 
-            while((numRead = inS.read(buffer,0,1024)) > 0) {
+            while ((numRead = inS.read(buffer, 0, 1024)) > 0) {
                 baos.write(buffer, 0, numRead);
             }
             byte result[] = baos.toByteArray();
@@ -75,7 +75,7 @@ public class Client {
         int menu = 10;
         String arquivoDir = null;
 
-        while (menu != 0){
+        while (menu != 0) {
             menu = 10;
             System.out.println("Cliente MENU");
             System.out.println("Digite 0 para sair.");
@@ -84,7 +84,7 @@ public class Client {
             menu = ler.nextInt();
             ler.nextLine();
 
-            if (menu == 1){
+            if (menu == 1) {
 
                 System.out.println("Digite o caminho do arquivo que deseja fazer Upload");
                 arquivoDir = ler.nextLine();
@@ -98,16 +98,18 @@ public class Client {
                     fileInputStream.close();
                     enviar();
 
-                }catch(Exception e){
+                } catch (Exception e) {
                     System.out.println(e);
                 }
 
 
-            }else{
-                if (menu == 2){
+            } else {
+                if (menu == 2) {
                     System.out.println("Baixando arquivo!");
                     baixar();
-                }else{
+                    menu = 0;
+                    System.out.println("Concluido!");
+                } else {
                     System.out.println("Opção inválida");
                 }
             }

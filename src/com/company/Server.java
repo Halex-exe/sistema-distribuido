@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Server extends Thread{
+public class Server extends Thread {
 
     private int porta;
     private Socket socket = null;
@@ -18,7 +18,7 @@ public class Server extends Thread{
         this.porta = porta;
     }
 
-    public void run(){
+    public void run() {
         try {
             iniciar();
         } catch (IOException e) {
@@ -29,25 +29,27 @@ public class Server extends Thread{
     public void iniciar() throws IOException {
 
         server = new ServerSocket(porta);
-        System.out.println("Server started " + this.getName()+" porta "+ this.porta);
+        System.out.println("Server started " + this.getName() + " porta " + this.porta);
 
         socket = server.accept();
 
-        System.out.println("Client accepted " + this.getName()+ " " + this.porta);
+        System.out.println("Client accepted " + this.getName() + " " + this.porta);
 
         in = new DataInputStream(socket.getInputStream());
-        out = new DataOutputStream(socket.getOutputStream());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024 /* or some other number */];
         int numRead;
 
-        while((numRead = in.read(buffer,0,1024)) > 0) {
+        while ((numRead = in.read(buffer, 0, 1024)) > 0) {
             baos.write(buffer, 0, numRead);
         }
         this.setResult(baos.toByteArray());
 
-        System.out.println(this.getName()+ " " + this.porta + " adicionou!");
+        System.out.println(this.getName() + " " + this.porta + " adicionou!");
+
+        in.close();
+        socket.close();
 
         dowload();
     }
@@ -66,7 +68,6 @@ public class Server extends Thread{
 
         ServerSocket serverr = new ServerSocket(porta + 1);
         Socket sockett = serverr.accept();
-        InputStream inn = new DataInputStream(sockett.getInputStream());
         OutputStream outt = new DataOutputStream(sockett.getOutputStream());
 
 
@@ -74,7 +75,6 @@ public class Server extends Thread{
         outt.flush();
 
         outt.close();
-        inn.close();
         sockett.close();
     }
 

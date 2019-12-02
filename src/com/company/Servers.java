@@ -3,7 +3,6 @@ package com.company;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
 
 public class Servers {
 
@@ -15,45 +14,44 @@ public class Servers {
     static byte pt1[] = null;
 
     public Servers(int port) throws IOException {
-        // starts server and waits for a connection
 
-            server = new ServerSocket(port);
-            System.out.println("Principal esperando");
-            socket = server.accept();
-            System.out.println("Principal conectou");
-            
-            in = new DataInputStream(socket.getInputStream());
-            out = new DataOutputStream(socket.getOutputStream());
+        server = new ServerSocket(port);
+        System.out.println("Principal esperando");
+        socket = server.accept();
+        System.out.println("Principal conectou");
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024 /* or some other number */];
-            int numRead;
+        in = new DataInputStream(socket.getInputStream());
 
-            while((numRead = in.read(buffer,0,1024)) > 0) {
-                baos.write(buffer, 0, numRead);
-            }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024 /* or some other number */];
+        int numRead;
 
-            byte result[] = baos.toByteArray();
+        while ((numRead = in.read(buffer, 0, 1024)) > 0) {
+            baos.write(buffer, 0, numRead);
+        }
 
-            byte[] parte1 = new byte[result.length / 4]; //ficar aqui.
-            pt1 = parte1;
+        byte result[] = baos.toByteArray();
 
-            byte[] parte2 = new byte[result.length / 4]; //mandar para o 1020.
-            byte[] parte3 = new byte[result.length / 4]; //mandar para o 1030.
-            byte[] parte4 = new byte[result.length / 4]; //mandar para o 1040.
+        byte[] parte1 = new byte[result.length / 4]; //ficar aqui.
+        pt1 = parte1;
 
-            System.arraycopy(result, 0, parte1, 0, parte1.length);
-            System.arraycopy(result, parte1.length, parte2, 0, parte2.length);
-            System.arraycopy(result, parte1.length + parte2.length, parte3, 0, parte3.length);
-            System.arraycopy(result, parte1.length + parte1.length + parte3.length, parte4, 0, parte4.length);
+        byte[] parte2 = new byte[result.length / 4]; //mandar para o 1020.
+        byte[] parte3 = new byte[result.length / 4]; //mandar para o 1030.
+        byte[] parte4 = new byte[result.length / 4]; //mandar para o 1040.
+
+        System.arraycopy(result, 0, parte1, 0, parte1.length);
+        System.arraycopy(result, parte1.length, parte2, 0, parte2.length);
+        System.arraycopy(result, parte1.length + parte2.length, parte3, 0, parte3.length);
+        System.arraycopy(result, parte1.length + parte1.length + parte3.length, parte4, 0, parte4.length);
 
 
-            enviar(1020, parte2);
-            enviar(1030, parte3);
-            enviar(1040, parte4);
+        enviar(1020, parte2);
+        enviar(1030, parte3);
+        enviar(1040, parte4);
 
-            esperar();
+        esperar();
     }
+
     public void esperar() throws IOException {
 
         server = new ServerSocket(1011);
@@ -71,18 +69,16 @@ public class Servers {
         System.arraycopy(pt3, 0, result2, pt1.length + pt2.length, pt3.length);
         System.arraycopy(pt4, 0, result2, pt1.length + pt2.length + pt3.length, pt4.length);
 
-        in = new DataInputStream(socket.getInputStream());
         out = new DataOutputStream(socket.getOutputStream());
 
 
         out.write(result2);
         out.flush();
-        in.close();
         out.close();
         socket.close();
     }
 
-    public void enviar (int porta, byte[] arquivo){ //enviar o arquivo para os servidores.
+    public void enviar(int porta, byte[] arquivo) { //enviar o arquivo para os servidores.
 
         Socket s = null;
         try {
@@ -101,7 +97,6 @@ public class Servers {
     public byte[] baixar(int porta) throws IOException {
 
         Socket s = new Socket("localhost", porta);
-        DataOutputStream outS = new DataOutputStream(s.getOutputStream());
         DataInputStream inS = new DataInputStream(s.getInputStream());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -109,7 +104,7 @@ public class Servers {
         byte[] buffer = new byte[1024 /* or some other number */];
         int numRead;
 
-        while((numRead = inS.read(buffer,0,1024)) > 0) {
+        while ((numRead = inS.read(buffer, 0, 1024)) > 0) {
             baos.write(buffer, 0, numRead);
         }
         byte result[] = baos.toByteArray();
