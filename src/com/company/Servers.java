@@ -18,11 +18,9 @@ public class Servers {
         // starts server and waits for a connection
 
             server = new ServerSocket(port);
-            System.out.println("Server started");
-
-            System.out.println("Waiting for a client ...");
+            System.out.println("Principal esperando");
             socket = server.accept();
-            System.out.println("Client accepted");
+            System.out.println("Principal conectou");
 
             // takes input from the client socket
             in = new DataInputStream(socket.getInputStream());
@@ -40,7 +38,7 @@ public class Servers {
             byte result[] = baos.toByteArray();
 
             byte[] parte1 = new byte[result.length / 4]; //ficar aqui.
-            //pt1 = parte1;
+            pt1 = parte1;
 
             byte[] parte2 = new byte[result.length / 4]; //mandar para o 1020.
             byte[] parte3 = new byte[result.length / 4]; //mandar para o 1030.
@@ -58,29 +56,39 @@ public class Servers {
 
 
 
-            byte result2[] = new byte[parte1.length + parte2.length + parte3.length + parte4.length];
+            //byte result2[] = new byte[parte1.length + parte2.length + parte3.length + parte4.length];
 
-            pt1 = result2;
+            //pt1 = result2;
 
-            System.arraycopy(parte1, 0, result2, 0, parte1.length);
-            System.arraycopy(parte2, 0, result2, parte1.length, parte2.length);
-            System.arraycopy(parte3, 0, result2, parte1.length + parte2.length, parte3.length);
-            System.arraycopy(parte4, 0, result2, parte1.length + parte2.length + parte3.length, parte4.length);
+//            System.arraycopy(parte1, 0, result2, 0, parte1.length);
+//            System.arraycopy(parte2, 0, result2, parte1.length, parte2.length);
+//            System.arraycopy(parte3, 0, result2, parte1.length + parte2.length, parte3.length);
+//            System.arraycopy(parte4, 0, result2, parte1.length + parte2.length + parte3.length, parte4.length);
 
 
             esperar();
     }
     public void esperar() throws IOException {
 
-        server = new ServerSocket(1111);
+        server = new ServerSocket(1011);
         socket = server.accept();
 
-        // takes input from the client socket
         in = new DataInputStream(socket.getInputStream());
-        //writes on client socket
         out = new DataOutputStream(socket.getOutputStream());
 
-        out.write(pt1);
+        //
+        byte[] pt2 = baixar(1021);
+        byte[] pt3 = baixar(1031);
+        byte[] pt4 = baixar(1041);
+        //
+        byte result2[] = new byte[pt1.length + pt2.length + pt3.length + pt4.length];
+
+        System.arraycopy(pt1, 0, result2, 0, pt1.length);
+        System.arraycopy(pt2, 0, result2, pt1.length, pt2.length);
+        System.arraycopy(pt3, 0, result2, pt1.length + pt2.length, pt3.length);
+        System.arraycopy(pt4, 0, result2, pt1.length + pt2.length + pt3.length, pt4.length);
+
+        out.write(result2);
         out.flush();
         in.close();
         out.close();
@@ -101,5 +109,24 @@ public class Servers {
             e.printStackTrace();
         }
 
+    }
+
+    public byte[] baixar(int porta) throws IOException {
+
+        Socket s = new Socket("localhost", porta);
+        DataOutputStream outS = new DataOutputStream(s.getOutputStream());
+        DataInputStream inS = new DataInputStream(s.getInputStream());
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        byte[] buffer = new byte[1024 /* or some other number */];
+        int numRead;
+
+        while((numRead = inS.read(buffer,0,1024)) > 0) {
+            baos.write(buffer, 0, numRead);
+        }
+        byte result[] = baos.toByteArray();
+
+        return result;
     }
 }

@@ -29,7 +29,7 @@ public class Client {
 
     public static void baixar(){ //ler
         try {
-            conectar(1111);
+            conectar(1011);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024 /* or some other number */];
             int numRead;
