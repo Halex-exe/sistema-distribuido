@@ -10,6 +10,7 @@ public class Client {
     static OutputStream outS;
     static InputStream inS;
     static byte[] bFile;
+    static int tamanhoMax = 4194304;
 
 
     public static void enviar() {
@@ -96,7 +97,15 @@ public class Client {
                     fileInputStream = new FileInputStream(file);
                     fileInputStream.read(bFile);
                     fileInputStream.close();
-                    enviar();
+
+                    //System.out.println(bFile.length);
+                    if (bFile.length <= tamanhoMax){
+                        enviar();
+                    }else{
+                        System.out.println("Arquivo é maior que 4MB");
+                        menu = 0;
+                    }
+
 
                 } catch (Exception e) {
                     System.out.println(e);
